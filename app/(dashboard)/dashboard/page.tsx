@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/client";
 import { RequestCard } from "@/components/RequestCard";
 import {
   RefreshCw,
-  Filter,
   Loader2,
   FileText,
   CheckSquare,
@@ -92,8 +91,7 @@ export default function DashboardPage() {
     );
   }
 
-  // Get unique batch dates
-  const batchDates = [...new Set(requests.map((r) => r.batch_date))].sort().reverse();
+  const batchDates = Array.from(new Set(requests.map((r) => r.batch_date))).sort().reverse();
 
   const filtered = requests.filter((r) => {
     if (filter !== "all" && r.status !== filter) return false;
@@ -120,7 +118,6 @@ export default function DashboardPage() {
 
   return (
     <div>
-      {/* Page header */}
       <div className="flex items-start justify-between mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[var(--foreground)]">ATIP Proposals</h1>
@@ -152,7 +149,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
           { label: "Total Proposals", value: s.total, color: "text-[var(--foreground)]" },
@@ -173,7 +169,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="flex items-center gap-1 bg-[var(--card)] border border-[var(--card-border)] rounded-lg p-1">
           {filterButtons.map(({ key, label, icon, count }) => (
@@ -221,7 +216,6 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Request list */}
       {loading ? (
         <div className="flex items-center justify-center py-20 text-[var(--muted)]">
           <Loader2 size={20} className="animate-spin mr-2" />
