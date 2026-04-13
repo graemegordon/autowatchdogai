@@ -126,7 +126,7 @@ export default function LoginPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required={mode !== "magic"}
+                    required={mode === "signin" || mode === "signup"}
                     placeholder="••••••••"
                     minLength={8}
                     className="w-full pl-9 pr-3 py-2.5 bg-[var(--background)] border border-[var(--card-border)] rounded-lg text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent transition-all"
