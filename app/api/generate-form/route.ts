@@ -15,7 +15,6 @@ export async function GET(request: NextRequest) {
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  // Fetch the request
   const { data: req, error } = await supabase
     .from("proposed_requests")
     .select("*")
@@ -30,7 +29,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Request must be approved first" }, { status: 400 });
   }
 
-  // Get user profile for requester info
   const { data: profile } = await supabase.auth.getUser();
   const email = profile.user?.email ?? "";
 
@@ -38,12 +36,12 @@ export async function GET(request: NextRequest) {
   const institutionCode = req.institution_code || institution?.code || "DEPT";
 
   const formData = {
-    requestId: req.id,
-    institution: req.institution,
+    requestId: req.id as string,
+    institution: req.institution as string,
     institutionCode,
-    description: req.description,
-    edited_description: req.edited_description,
-    date_range: req.date_range || "All available records",
+    description: req.description as string,
+    edited_description: req.edited_description as string | undefined,
+    dateRange: (req.date_range as string) || "All available records",
     requesterName: email.split("@")[0].replace(/[._]/g, " "),
     requesterAddress: "[Your Street Address]",
     requesterCity: "[Your City]",
@@ -56,12 +54,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const pdfBytes = await generateATIPForm(formData);
+    const buffer = Buffer.from(pdfBytes);
 
-    return new NextResponse(pdfBytes, {
+    return new NextResponse(buffer, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="ATIP-${institutionCode}-${id.slice(0, 8)}.pdf"`,
-        "Content-Length": pdfBytes.length.toString(),
+        "Content-Length": buffer.length.toString(),
       },
     });
   } catch (err: unknown) {
